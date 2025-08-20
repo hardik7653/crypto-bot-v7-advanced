@@ -1,6 +1,6 @@
+from fastapi import FastAPI
 import json, traceback
 from pathlib import Path
-from fastapi import FastAPI
 from bot.execution.exchange_connector import MockExchange
 from bot.data.data_processor import add_indicators, make_supervised
 from bot.models.model_manager import train_quick, load_model, predict
@@ -8,7 +8,7 @@ from bot.strategies.strategy import combine_signals
 from bot.trading.trade_manager import log_trade, init_db
 from bot.utils.logger import setup_logger
 
-# Setup FastAPI
+# FastAPI app initialization
 app = FastAPI()
 
 log = setup_logger('main-v7')
