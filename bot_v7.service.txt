@@ -1,0 +1,2 @@
+[Service]
+ExecStart=/usr/bin/python3 /home/ubuntu/bot_v7_advanced/main-v7.py
