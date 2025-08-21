@@ -1,6 +1,6 @@
-from fastapi import FastAPI
 import json, traceback
 from pathlib import Path
+from fastapi import FastAPI
 from bot.execution.exchange_connector import MockExchange
 from bot.data.data_processor import add_indicators, make_supervised
 from bot.models.model_manager import train_quick, load_model, predict
@@ -15,8 +15,18 @@ log = setup_logger('main-v7')
 HERE = Path(__file__).parent
 cfg = json.loads((HERE/'config.json').read_text())
 
+# Root endpoint for a welcome message
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Crypto Bot API!"}
+
+# /run_once endpoint to execute the bot logic
 @app.get("/run_once")
 def run_once():
+    # Ensure the reports directory exists
+    reports_dir = HERE / 'reports'
+    reports_dir.mkdir(parents=True, exist_ok=True)  # Create the 'reports' directory if it doesn't exist
+    
     symbols = cfg.get('symbols', ['BTC/USDT', 'ETH/USDT'])
     exchange = MockExchange()
     dfs = []
@@ -60,7 +70,8 @@ def run_once():
             log.exception('Eval error %s', e)
             reports[s] = {'error': str(e)}
 
-    (HERE/'reports'/'v7_multi_report.json').write_text(json.dumps(reports, indent=2))
+    # Write the reports to the reports directory
+    (reports_dir / 'v7_multi_report.json').write_text(json.dumps(reports, indent=2))
     return reports
 
 if __name__ == '__main__':
